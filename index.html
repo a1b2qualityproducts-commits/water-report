@@ -308,22 +308,19 @@
         const statusBadge = document.getElementById("status-badge");
         statusBadge.classList.remove("pulse", "loading");
         
-        // 1. Grab the status safely, checking for both "status" and "Status" 
+        // Grab the status safely, checking for both "status" and "Status" 
         const rawStatus = data.status || data.Status || ""; 
         
-        // 2. Force it to string, convert entirely to lowercase, and remove ANY extra spaces
+        // Force it to string, convert entirely to lowercase, and remove ANY extra spaces
         const currentStatus = String(rawStatus).toLowerCase().trim();
         
-        // 3. Evaluate strictly
-        if (currentStatus === "yes") {
-          statusBadge.innerText = "SAFE";
-          statusBadge.className = "status-badge safe";
-        } else if (currentStatus === "no") {
+        // EVALUATE: If exact word is "no" -> UNSAFE. Everything else -> SAFE.
+        if (currentStatus === "no") {
           statusBadge.innerText = "UNSAFE";
           statusBadge.className = "status-badge unsafe";
         } else {
-          statusBadge.innerText = "UNSAFE"; // Default to unsafe if blank or invalid text
-          statusBadge.className = "status-badge unsafe";
+          statusBadge.innerText = "SAFE";
+          statusBadge.className = "status-badge safe";
         }
 
         // Time Update
