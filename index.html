@@ -316,12 +316,12 @@
         const statusBadge = document.getElementById("status-badge");
         statusBadge.classList.remove("pulse", "loading");
         
-        const currentStatus = String(data.status).toLowerCase().trim();
-        if (currentStatus === "yes" || currentStatus === "safe") {
-          statusBadge.innerText = "SAFE";
+        const currentStatus = String(data.Status).toLowerCase().trim();
+        if (currentStatus === "no" || currentStatus === "un safe") {
+          statusBadge.innerText = "UN SAFE";
           statusBadge.className = "status-badge safe";
         } else {
-          statusBadge.innerText = "UNSAFE";
+          statusBadge.innerText = "SAFE";
           statusBadge.className = "status-badge unsafe";
         }
 
