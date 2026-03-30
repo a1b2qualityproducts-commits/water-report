@@ -50,8 +50,8 @@
     }
 
     .logo {
-      width: 150px;
-      height: 150px;
+      width: 90px;
+      height: 90px;
       object-fit: contain;
       margin-bottom: 5px;
       filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
@@ -147,7 +147,6 @@
       font-weight: 600;
     }
 
-    /* Highlighted Status Badge */
     .status-badge {
       display: inline-block;
       padding: 12px 40px;
@@ -160,14 +159,14 @@
     }
 
     .safe {
-      background: rgba(255, 75, 75, 0.15);
+      background: rgba(0, 230, 118, 0.15);
       color: var(--safe-glow);
       border: 2px solid var(--safe-glow);
       box-shadow: 0 0 25px rgba(0, 230, 118, 0.5), inset 0 0 10px rgba(0, 230, 118, 0.3);
     }
 
     .unsafe {
-      background: rgba(0, 230, 118, 0.15);
+      background: rgba(255, 75, 75, 0.15);
       color: var(--unsafe-glow);
       border: 2px solid var(--unsafe-glow);
       box-shadow: 0 0 25px rgba(255, 75, 75, 0.5), inset 0 0 10px rgba(255, 75, 75, 0.3);
@@ -179,7 +178,6 @@
       border: 2px solid rgba(255,255,255,0.4);
     }
 
-    /* Highlighted Refresh Button */
     .action-btn {
       background: rgba(255, 255, 255, 0.1);
       color: white;
@@ -272,26 +270,21 @@
   const apiURL = "https://script.google.com/macros/s/AKfycbzcp8tMFVB7ppn9LtAz5W1jqhAV3hgwaqYVJt2-A2fRMDQJOOVvXwGcmmOSMCJzjAb0vw/exec";
 
   function fetchWaterData() {
-    // Reset UI to loading state
     document.getElementById("status-badge").className = "status-badge loading pulse";
     document.getElementById("status-badge").innerText = "SCANNING...";
     document.getElementById("date").innerText = "Fetching latest...";
     document.getElementById("date").classList.add("pulse");
     
-    // Add a random timestamp parameter to force browser to ignore cache when clicking refresh
     fetch(apiURL + "?nocache=" + new Date().getTime())
       .then(res => res.json())
       .then(data => {
         if (!data.success) throw new Error("API Error");
 
-        // --- FULL DAY NAME DATE FIX ---
+        // Date Logic
         let cleanDate = "Unknown Date";
         if (data.date) {
-          // Parse the date string into a real JavaScript Date object
           const dateObj = new Date(data.date);
-          
           if (!isNaN(dateObj)) {
-            // Format it to show the full day name (e.g., "Saturday, April 4, 2026")
             cleanDate = new Intl.DateTimeFormat('en-IN', {
               weekday: 'long',
               year: 'numeric',
@@ -299,7 +292,6 @@
               day: 'numeric'
             }).format(dateObj);
           } else {
-            // Fallback if parsing fails
             cleanDate = String(data.date).split(" ")[0]; 
           }
         }
@@ -307,25 +299,34 @@
         document.getElementById("date").classList.remove("pulse");
         document.getElementById("date").innerText = cleanDate;
         
-        // Inject metrics
-        document.getElementById("tds").innerText = data.tds !== "" ? data.tds : "--";
-        document.getElementById("ph").innerText = data.ph !== "" ? data.ph : "--";
-        document.getElementById("hardness").innerText = data.hardness !== "" ? data.hardness : "--";
+        // Metrics Logic
+        document.getElementById("tds").innerText = (data.tds !== undefined && data.tds !== "") ? data.tds : "--";
+        document.getElementById("ph").innerText = (data.ph !== undefined && data.ph !== "") ? data.ph : "--";
+        document.getElementById("hardness").innerText = (data.hardness !== undefined && data.hardness !== "") ? data.hardness : "--";
 
-        // Status Badge Logic
+        // BULLETPROOF STATUS LOGIC
         const statusBadge = document.getElementById("status-badge");
         statusBadge.classList.remove("pulse", "loading");
         
-        const currentStatus = String(data.Status).toLowerCase().trim();
-        if (currentStatus === "no" || currentStatus === "un safe") {
-          statusBadge.innerText = "UN SAFE";
-          statusBadge.className = "status-badge safe";
-        } else {
+        // 1. Grab the status safely, checking for both "status" and "Status" 
+        const rawStatus = data.status || data.Status || ""; 
+        
+        // 2. Force it to string, convert entirely to lowercase, and remove ANY extra spaces
+        const currentStatus = String(rawStatus).toLowerCase().trim();
+        
+        // 3. Evaluate strictly
+        if (currentStatus === "yes") {
           statusBadge.innerText = "SAFE";
+          statusBadge.className = "status-badge safe";
+        } else if (currentStatus === "no") {
+          statusBadge.innerText = "UNSAFE";
+          statusBadge.className = "status-badge unsafe";
+        } else {
+          statusBadge.innerText = "UNSAFE"; // Default to unsafe if blank or invalid text
           statusBadge.className = "status-badge unsafe";
         }
 
-        // Update sync time
+        // Time Update
         const now = new Date();
         document.getElementById("time").innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
       })
@@ -340,10 +341,7 @@
       });
   }
 
-  // Load data immediately when the page opens
   fetchWaterData();
-
-  // Attach the fetch function to our new Refresh button
   document.getElementById("refreshBtn").addEventListener("click", fetchWaterData);
 
 </script>
