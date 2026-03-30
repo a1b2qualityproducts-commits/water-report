@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASE AQUAANSH - Water Quality Report</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0077ff, #00c6ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background: white;
+  width: 90%;
+  max-width: 380px;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+.logo {
+  width: 70px;
+  margin-bottom: 10px;
+}
+
+h1 {
+  color: #0077ff;
+  margin: 5px 0;
+}
+
+.tagline {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 15px;
+}
+
+.date {
+  font-size: 14px;
+  margin-bottom: 15px;
+  color: #444;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #0077ff;
+  color: white;
+  padding: 10px;
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+}
+
+.status {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.safe {
+  color: green;
+}
+
+.unsafe {
+  color: red;
+}
+
+.footer {
+  font-size: 11px;
+  color: #999;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <img src="https://cdn-icons-png.flaticon.com/512/728/728093.png" class="logo">
+
+  <h1>ASE AQUAANSH</h1>
+  <div class="tagline">TRUST IN EVERY DROP</div>
+
+  <div class="date">
+    📅 Report Date: <span id="date">Loading...</span>
+  </div>
+
+  <table class="table">
+    <tr>
+      <th>TDS</th>
+      <th>pH</th>
+      <th>Hardness</th>
+    </tr>
+    <tr>
+      <td id="tds">Loading...</td>
+      <td id="ph">Loading...</td>
+      <td id="hardness">Loading...</td>
+    </tr>
+  </table>
+
+  <div class="status">
+    Bacteria Status:
+    <span id="status">Loading...</span>
+  </div>
+
+  <div class="footer">
+    Last Updated: <span id="time"></span>
+  </div>
+
+</div>
+
+<script>
+
+const apiURL = "PASTE_NEW_LINK_HERE";
+
+fetch(apiURL + "?t=" + new Date().getTime(), {
+  method: "GET"
+})
+.then(res => res.text())   // 👈 IMPORTANT CHANGE
+.then(text => {
+  const data = JSON.parse(text);  // 👈 PARSE MANUALLY
+
+  console.log("API DATA:", data);
+
+  if (!data || !data.success) {
+    throw new Error("No data");
+  }
+
+  document.getElementById("tds").innerHTML = data.tds + " ppm";
+  document.getElementById("ph").innerHTML = data.ph;
+  document.getElementById("hardness").innerHTML = data.hardness + " ppm";
+  document.getElementById("status").innerHTML = data.status;
+  document.getElementById("date").innerHTML = data.date;
+
+  if (data.status.toLowerCase() === "safe") {
+    document.getElementById("status").classList.add("safe");
+  } else {
+    document.getElementById("status").classList.add("unsafe");
+  }
+
+})
+.catch((err) => {
+  console.error(err);
+
+  document.getElementById("tds").innerHTML = "--";
+  document.getElementById("ph").innerHTML = "--";
+  document.getElementById("hardness").innerHTML = "--";
+  document.getElementById("status").innerHTML = "Values aren't entered";
+  document.getElementById("status").classList.add("unsafe");
+  document.getElementById("date").innerHTML = "No Data";
+});
+
+// Time
+const now = new Date();
+document.getElementById("time").innerHTML = now.toLocaleTimeString();
+
+</script>
+
+
+</body>
+</html>
