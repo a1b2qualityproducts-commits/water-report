@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ASE AQUAANSH - Water Quality Report</title>
 
@@ -95,8 +96,7 @@ h1 {
 <body>
 
 <div class="card">
-
-  <img src="https://github.com/a1b2qualityproducts-commits/water-report/blob/main/preview%20(2)-Photoroom.png?raw=true" class="logo">
+  <img src="https://github.com/a1b2qualityproducts-commits/water-report/blob/main/preview%20(2)-Photoroom.png?raw=true" class="logo" alt="ASE AQUAANSH Logo">
 
   <h1>ASE AQUAANSH</h1>
   <div class="tagline">TRUST IN EVERY DROP</div>
@@ -124,58 +124,60 @@ h1 {
   </div>
 
   <div class="footer">
-    Last Updated: <span id="time"></span>
+    Last Checked: <span id="time"></span>
   </div>
 
 </div>
 
 <script>
+// 👇 PASTE YOUR NEW WEB APP URL HERE 👇
+const apiURL = "YOUR_NEW_WEB_APP_URL_GOES_HERE";
 
-const apiURL = "https://script.google.com/macros/s/AKfycbxH5kfyESNK7cGaTfOZTjL4gANj-3FE7kz8q3ioRV015zRxqiScZZRdmTL2yFmZ8c2_8w/exec";
+fetch(apiURL)
+  .then(res => res.json()) // We can use .json() directly now that the Apps Script is safer
+  .then(data => {
+    console.log("Data received from Google Sheets:", data);
 
-fetch(apiURL + "?t=" + new Date().getTime(), {
-  method: "GET"
-})
-.then(res => res.text())   // 👈 IMPORTANT CHANGE
-.then(text => {
-  const data = JSON.parse(text);  // 👈 PARSE MANUALLY
+    if (!data.success) {
+      throw new Error(data.error || "Unknown error from Google Script");
+    }
 
-  console.log("API DATA:", data);
+    // Populate the HTML with the data
+    document.getElementById("tds").innerHTML = data.tds + " ppm";
+    document.getElementById("ph").innerHTML = data.ph;
+    document.getElementById("hardness").innerHTML = data.hardness + " ppm";
+    document.getElementById("status").innerHTML = data.status;
+    document.getElementById("date").innerHTML = data.date;
 
-  if (!data || !data.success) {
-    throw new Error("No data");
-  }
+    // Handle status color styling safely
+    const statusEl = document.getElementById("status");
+    if (data.status && String(data.status).toLowerCase().trim() === "yes") {
+      statusEl.innerHTML = "Safe";
+      statusEl.classList.add("safe");
+      statusEl.classList.remove("unsafe");
+    } else {
+      statusEl.innerHTML = "Unsafe / No";
+      statusEl.classList.add("unsafe");
+      statusEl.classList.remove("safe");
+    }
+  })
+  .catch((err) => {
+    console.error("Fetch Error:", err);
 
-  document.getElementById("tds").innerHTML = data.tds + " ppm";
-  document.getElementById("ph").innerHTML = data.ph;
-  document.getElementById("hardness").innerHTML = data.hardness + " ppm";
-  document.getElementById("status").innerHTML = data.status;
-  document.getElementById("date").innerHTML = data.date;
-
-  if (data.status.toLowerCase() === "safe") {
-    document.getElementById("status").classList.add("safe");
-  } else {
+    // Fallback UI if something breaks
+    document.getElementById("tds").innerHTML = "--";
+    document.getElementById("ph").innerHTML = "--";
+    document.getElementById("hardness").innerHTML = "--";
+    document.getElementById("status").innerHTML = "Error loading data";
     document.getElementById("status").classList.add("unsafe");
-  }
+    document.getElementById("date").innerHTML = "No Data";
+  });
 
-})
-.catch((err) => {
-  console.error(err);
-
-  document.getElementById("tds").innerHTML = "--";
-  document.getElementById("ph").innerHTML = "--";
-  document.getElementById("hardness").innerHTML = "--";
-  document.getElementById("status").innerHTML = "Values aren't entered";
-  document.getElementById("status").classList.add("unsafe");
-  document.getElementById("date").innerHTML = "No Data";
-});
-
-// Time
+// Set current time
 const now = new Date();
 document.getElementById("time").innerHTML = now.toLocaleTimeString();
 
 </script>
-
 
 </body>
 </html>
