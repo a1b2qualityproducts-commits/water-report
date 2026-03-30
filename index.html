@@ -1,181 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASE AQUAANSH - Water Quality Report</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASE AQUAANSH - Premium Water Quality</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --safe-glow: #00e676;
+      --unsafe-glow: #ff4b4b;
+      --button-glow: #00c6ff;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0077ff, #00c6ff);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+    body {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(-45deg, #001f3f, #005c97, #36d1dc, #0052d4);
+      background-size: 400% 400%;
+      animation: waveFlow 15s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: white;
+    }
 
-.card {
-  background: white;
-  width: 90%;
-  max-width: 380px;
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  text-align: center;
-  animation: fadeIn 1s ease-in-out;
-}
+    @keyframes waveFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-@keyframes fadeIn {
-  from {opacity: 0; transform: translateY(20px);}
-  to {opacity: 1; transform: translateY(0);}
-}
+    .glass-dashboard {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      width: 90%;
+      max-width: 420px;
+      border-radius: 30px;
+      padding: 40px 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.4);
+      text-align: center;
+      position: relative;
+    }
 
-.logo {
-  width: 70px;
-  margin-bottom: 10px;
-}
+    .logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin-bottom: 5px;
+      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+    }
 
-h1 {
-  color: #0077ff;
-  margin: 5px 0;
-}
+    h1 {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 0 0 5px 0;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-.tagline {
-  font-size: 12px;
-  color: #777;
-  margin-bottom: 15px;
-}
+    .tagline {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.85);
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
 
-.date {
-  font-size: 14px;
-  margin-bottom: 15px;
-  color: #444;
-}
+    .date-badge {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 30px;
+    }
 
-.table th {
-  background: #0077ff;
-  color: white;
-  padding: 10px;
-}
+    .metric-card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 22px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
 
-.table td {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
-  font-weight: 500;
-}
+    .metric-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-5px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
 
-.status {
-  margin-top: 15px;
-  font-size: 16px;
-  font-weight: bold;
-}
+    .metric-title {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-.safe {
-  color: green;
-}
+    .metric-value {
+      font-size: 26px;
+      font-weight: 800;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-.unsafe {
-  color: red;
-}
+    .metric-unit {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 2px;
+    }
 
-.footer {
-  font-size: 11px;
-  color: #999;
-  margin-top: 10px;
-}
-</style>
+    .status-section {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 24px;
+      padding: 25px 20px;
+      margin-bottom: 25px;
+      border: 1px solid var(--glass-border);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    .status-label {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    /* Highlighted Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 12px 40px;
+      border-radius: 50px;
+      font-size: 22px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .safe {
+      background: rgba(0, 230, 118, 0.15);
+      color: var(--safe-glow);
+      border: 2px solid var(--safe-glow);
+      box-shadow: 0 0 25px rgba(0, 230, 118, 0.5), inset 0 0 10px rgba(0, 230, 118, 0.3);
+    }
+
+    .unsafe {
+      background: rgba(255, 75, 75, 0.15);
+      color: var(--unsafe-glow);
+      border: 2px solid var(--unsafe-glow);
+      box-shadow: 0 0 25px rgba(255, 75, 75, 0.5), inset 0 0 10px rgba(255, 75, 75, 0.3);
+    }
+
+    .loading {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+
+    /* Highlighted Refresh Button */
+    .action-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: var(--button-glow);
+      box-shadow: 0 0 20px rgba(0, 198, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .action-btn:active {
+      transform: translateY(1px);
+    }
+
+    .footer {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="card">
+<div class="glass-dashboard">
+  
   <img src="https://github.com/a1b2qualityproducts-commits/water-report/blob/main/preview%20(2)-Photoroom.png?raw=true" class="logo" alt="ASE AQUAANSH Logo">
 
   <h1>ASE AQUAANSH</h1>
-  <div class="tagline">TRUST IN EVERY DROP</div>
+  <div class="tagline">Trust In Every Drop</div>
 
-  <div class="date">
-    📅 Report Date: <span id="date">Loading...</span>
+  <div class="date-badge">
+    📅 <span id="date">Connecting to sensor...</span>
   </div>
 
-  <table class="table">
-    <tr>
-      <th>TDS</th>
-      <th>pH</th>
-      <th>Hardness</th>
-    </tr>
-    <tr>
-      <td id="tds">Loading...</td>
-      <td id="ph">Loading...</td>
-      <td id="hardness">Loading...</td>
-    </tr>
-  </table>
-
-  <div class="status">
-    Bacteria Status:
-    <span id="status">Loading...</span>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-title">TDS</div>
+      <div class="metric-value" id="tds">--</div>
+      <div class="metric-unit">ppm</div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-title">pH</div>
+      <div class="metric-value" id="ph">--</div>
+      <div class="metric-unit">level</div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-title">Hard</div>
+      <div class="metric-value" id="hardness">--</div>
+      <div class="metric-unit">ppm</div>
+    </div>
   </div>
+
+  <div class="status-section">
+    <div class="status-label">Bacteria Status</div>
+    <div id="status-badge" class="status-badge loading pulse">Scanning...</div>
+  </div>
+
+  <button id="refreshBtn" class="action-btn">🔄 Refresh Data</button>
 
   <div class="footer">
-    Last Checked: <span id="time"></span>
+    Live Data Synced: <span id="time">--:--</span>
   </div>
 
 </div>
 
 <script>
-// 👇 PASTE YOUR NEW WEB APP URL HERE 👇
-const apiURL = "https://script.google.com/macros/s/AKfycbzcp8tMFVB7ppn9LtAz5W1jqhAV3hgwaqYVJt2-A2fRMDQJOOVvXwGcmmOSMCJzjAb0vw/exec";
+  const apiURL = "https://script.google.com/macros/s/AKfycbzcp8tMFVB7ppn9LtAz5W1jqhAV3hgwaqYVJt2-A2fRMDQJOOVvXwGcmmOSMCJzjAb0vw/exec";
 
-fetch(apiURL)
-  .then(res => res.json()) // We can use .json() directly now that the Apps Script is safer
-  .then(data => {
-    console.log("Data received from Google Sheets:", data);
+  function fetchWaterData() {
+    // Reset UI to loading state
+    document.getElementById("status-badge").className = "status-badge loading pulse";
+    document.getElementById("status-badge").innerText = "SCANNING...";
+    document.getElementById("date").innerText = "Fetching latest...";
+    document.getElementById("date").classList.add("pulse");
+    
+    // Add a random timestamp parameter to force browser to ignore cache when clicking refresh
+    fetch(apiURL + "?nocache=" + new Date().getTime())
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) throw new Error("API Error");
 
-    if (!data.success) {
-      throw new Error(data.error || "Unknown error from Google Script");
-    }
+        // --- FULL DAY NAME DATE FIX ---
+        let cleanDate = "Unknown Date";
+        if (data.date) {
+          // Parse the date string into a real JavaScript Date object
+          const dateObj = new Date(data.date);
+          
+          if (!isNaN(dateObj)) {
+            // Format it to show the full day name (e.g., "Saturday, April 4, 2026")
+            cleanDate = new Intl.DateTimeFormat('en-IN', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }).format(dateObj);
+          } else {
+            // Fallback if parsing fails
+            cleanDate = String(data.date).split(" ")[0]; 
+          }
+        }
+        
+        document.getElementById("date").classList.remove("pulse");
+        document.getElementById("date").innerText = cleanDate;
+        
+        // Inject metrics
+        document.getElementById("tds").innerText = data.tds !== "" ? data.tds : "--";
+        document.getElementById("ph").innerText = data.ph !== "" ? data.ph : "--";
+        document.getElementById("hardness").innerText = data.hardness !== "" ? data.hardness : "--";
 
-    // Populate the HTML with the data
-    document.getElementById("tds").innerHTML = data.tds + " ppm";
-    document.getElementById("ph").innerHTML = data.ph;
-    document.getElementById("hardness").innerHTML = data.hardness + " ppm";
-    document.getElementById("status").innerHTML = data.status;
-    document.getElementById("date").innerHTML = data.date;
+        // Status Badge Logic
+        const statusBadge = document.getElementById("status-badge");
+        statusBadge.classList.remove("pulse", "loading");
+        
+        const currentStatus = String(data.status).toLowerCase().trim();
+        if (currentStatus === "yes" || currentStatus === "safe") {
+          statusBadge.innerText = "SAFE";
+          statusBadge.className = "status-badge safe";
+        } else {
+          statusBadge.innerText = "UNSAFE";
+          statusBadge.className = "status-badge unsafe";
+        }
 
-    // Handle status color styling safely
-    const statusEl = document.getElementById("status");
-    if (data.status && String(data.status).toLowerCase().trim() === "yes") {
-      statusEl.innerHTML = "Safe";
-      statusEl.classList.add("safe");
-      statusEl.classList.remove("unsafe");
-    } else {
-      statusEl.innerHTML = "Unsafe / No";
-      statusEl.classList.add("unsafe");
-      statusEl.classList.remove("safe");
-    }
-  })
-  .catch((err) => {
-    console.error("Fetch Error:", err);
+        // Update sync time
+        const now = new Date();
+        document.getElementById("time").innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      })
+      .catch(error => {
+        document.getElementById("date").innerText = "Connection Failed";
+        document.getElementById("date").classList.remove("pulse");
+        
+        const statusBadge = document.getElementById("status-badge");
+        statusBadge.innerText = "NO DATA";
+        statusBadge.className = "status-badge unsafe";
+        statusBadge.classList.remove("pulse", "loading");
+      });
+  }
 
-    // Fallback UI if something breaks
-    document.getElementById("tds").innerHTML = "--";
-    document.getElementById("ph").innerHTML = "--";
-    document.getElementById("hardness").innerHTML = "--";
-    document.getElementById("status").innerHTML = "Error loading data";
-    document.getElementById("status").classList.add("unsafe");
-    document.getElementById("date").innerHTML = "No Data";
-  });
+  // Load data immediately when the page opens
+  fetchWaterData();
 
-// Set current time
-const now = new Date();
-document.getElementById("time").innerHTML = now.toLocaleTimeString();
+  // Attach the fetch function to our new Refresh button
+  document.getElementById("refreshBtn").addEventListener("click", fetchWaterData);
 
 </script>
 
