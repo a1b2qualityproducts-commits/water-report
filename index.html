@@ -49,9 +49,10 @@
       position: relative;
     }
 
+    /* ENLARGED LOGO */
     .logo {
-      width: 90px;
-      height: 90px;
+      width: 130px; 
+      height: 130px;
       object-fit: contain;
       margin-bottom: 5px;
       filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
@@ -89,8 +90,8 @@
 
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 15px;
       margin-bottom: 30px;
     }
 
@@ -241,20 +242,14 @@
     </div>
     
     <div class="metric-card">
-      <div class="metric-title">PH</div>
+      <div class="metric-title">pH</div>
       <div class="metric-value" id="ph">--</div>
       <div class="metric-unit">level</div>
-    </div>
-    
-    <div class="metric-card">
-      <div class="metric-title">Hardness</div>
-      <div class="metric-value" id="hardness">--</div>
-      <div class="metric-unit">ppm</div>
     </div>
   </div>
 
   <div class="status-section">
-    <div class="status-label">Status</div>
+    <div class="status-label">Bacteria Status</div>
     <div id="status-badge" class="status-badge loading pulse">Scanning...</div>
   </div>
 
@@ -267,6 +262,7 @@
 </div>
 
 <script>
+  // YOUR EXACT GOOGLE APPS SCRIPT URL
   const apiURL = "https://script.google.com/macros/s/AKfycbzcp8tMFVB7ppn9LtAz5W1jqhAV3hgwaqYVJt2-A2fRMDQJOOVvXwGcmmOSMCJzjAb0vw/exec";
 
   function fetchWaterData() {
@@ -299,10 +295,9 @@
         document.getElementById("date").classList.remove("pulse");
         document.getElementById("date").innerText = cleanDate;
         
-        // Metrics Logic
+        // Metrics Logic (Hardness Removed)
         document.getElementById("tds").innerText = (data.tds !== undefined && data.tds !== "") ? data.tds : "--";
         document.getElementById("ph").innerText = (data.ph !== undefined && data.ph !== "") ? data.ph : "--";
-        document.getElementById("hardness").innerText = (data.hardness !== undefined && data.hardness !== "") ? data.hardness : "--";
 
         // BULLETPROOF STATUS LOGIC
         const statusBadge = document.getElementById("status-badge");
